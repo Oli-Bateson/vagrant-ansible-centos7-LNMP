@@ -35,6 +35,7 @@
     - mysql-connector-python
     - memcached
     - nginx
+    - ant
 
 - name: Lock packages to required versions
   shell: yum versionlock {{ item }}
