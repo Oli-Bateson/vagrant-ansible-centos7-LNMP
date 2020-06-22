@@ -23,3 +23,15 @@
     insertafter: 'EOF'
   with_items: "{{ bash | default([]) }}"
   changed_when: false
+
+- name: insert custom mount bind into .bashrc for Windows-backed guest VMs
+  become: true
+  become_user: vagrant
+  blockinfile:
+    path: ~/.bashrc
+    insertafter: 'EOF'
+    state: present
+    block: |
+      alias vendormount='sudo mount --bind ~/vendor /bacpac/vendor'
+      alias vendorunmount='sudo umount ~/vendor'
+  when: windowshost == true

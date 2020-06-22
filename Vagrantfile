@@ -54,12 +54,18 @@ Vagrant.configure("2") do |config|
         ansible.inventory_path = "/ansible/hosts"
         ansible.verbose = true
         ansible.provisioning_path = "/ansible"
+        ansible.extra_vars = {
+          windowshost: true
+        }
+
+      end
     else
       default.vm.provision "ansible" do |ansible|
         ansible.compatibility_mode = "2.0"
         ansible.playbook = "ansible/install.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.verbose = true
+      end
     end
   end
 end
