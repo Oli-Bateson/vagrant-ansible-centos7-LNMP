@@ -47,12 +47,19 @@ Vagrant.configure("2") do |config|
       v.customize [ "guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000 ]
     end
 
-    default.vm.provision "ansible_local" do |ansible|
-      ansible.compatibility_mode = "2.0"
-      ansible.playbook = "/ansible/install.yml"
-      ansible.inventory_path = "/ansible/hosts"
-      ansible.verbose = true
-      ansible.provisioning_path = "/ansible"
+    if OS.windows?
+      default.vm.provision "ansible_local" do |ansible|
+        ansible.compatibility_mode = "2.0"
+        ansible.playbook = "/ansible/install.yml"
+        ansible.inventory_path = "/ansible/hosts"
+        ansible.verbose = true
+        ansible.provisioning_path = "/ansible"
+    else
+      default.vm.provision "ansible" do |ansible|
+        ansible.compatibility_mode = "2.0"
+        ansible.playbook = "ansible/install.yml"
+        ansible.inventory_path = "ansible/hosts"
+        ansible.verbose = true
     end
   end
 end
