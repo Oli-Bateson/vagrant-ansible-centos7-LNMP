@@ -6,3 +6,9 @@
     - php_version != "5.6"
     - php_version != "7.2"
     - php_version != "7.3"
+
+- fail:
+    msg: "Invalid MySQL Version"
+  when:
+    - mysql_version != "5.5"
+    - mysql_version != "5.7"
