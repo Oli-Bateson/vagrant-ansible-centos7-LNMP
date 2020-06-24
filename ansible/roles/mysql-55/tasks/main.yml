@@ -34,13 +34,7 @@
     state: started
     enabled: true
 
-- name: Temp Root Config
-  shell: grep "temporary password" /var/log/mysqld.log | cut -d ' ' -f 11
-  register: temporary_mysql_password
-  changed_when: false
-  failed_when: false
-
-- name: Create root MySQL configuration file
+- name: Create root MySQL configuration file (will be replaced)
   template:
     src: my-default-root.cnf.j2
     dest: ~/.my.cnf
@@ -48,12 +42,12 @@
   failed_when: false
 
 - name: testusers
-  shell: mysql --connect-expired-password -e "ALTER USER USER() IDENTIFIED BY '#!SomeLongPassword1234'"
+  shell: 'mysql -e "UPDATE mysql.user SET PASSWORD=PASSWORD(''SomeLongPassword1234XYZ'') WHERE user=''root''; FLUSH PRIVILEGES;" -uroot'
   changed_when: false
   failed_when: false
 
 - name: update mysql root password for all root accounts
-  mysql_user: name={{ mysql_root_db_user }} host={{ item }} password={{ mysql_root_db_pass }} priv='*.*:ALL,GRANT' login_user='root' login_password='#!SomeLongPassword1234'
+  mysql_user: name={{ mysql_root_db_user }} host={{ item }} password={{ mysql_root_db_pass }} priv='*.*:ALL,GRANT' login_user='root' login_password='SomeLongPassword1234XYZ'
   with_items:
    - '%'
 
@@ -82,4 +76,4 @@
     host: localhost
     state: absent
     login_user: 'root'
-    login_password: '#!SomeLongPassword1234'
+    login_password: 'SomeLongPassword1234XYZ'

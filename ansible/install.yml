@@ -7,8 +7,8 @@
   - core
   - yum
   - selinux
-  - { role: mysql-55, when mysql_version == "5.5"}
-  - { role: mysql-57, when mysql_version == "5.7"}
+  - { role: mysql-55, when: mysql_version == "5.5"}
+  - { role: mysql-57, when: mysql_version == "5.7"}
   - memcached
   - php-remove
   - { role: php-55, when: php_version == "5.5" }

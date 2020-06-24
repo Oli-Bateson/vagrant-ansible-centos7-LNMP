@@ -66,6 +66,7 @@
     state: present
     enablerepo: mysql55-community
     disablerepo: epel
+    disable_gpg_check: yes
   vars:
     packages:
       - mysql-community-server-5.5.41-2.el6.x86_64
