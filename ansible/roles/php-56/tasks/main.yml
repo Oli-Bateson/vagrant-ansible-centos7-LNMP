@@ -18,6 +18,7 @@
     - php56-php-pecl-memcached
     - php56-php-mcrypt
     - php56-php-fpm
+    - php56-php-gd
 
 - name: set access log file
   file:
