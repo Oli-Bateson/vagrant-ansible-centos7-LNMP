@@ -24,7 +24,9 @@ vagrant up (this will fail at the initial Ansible provision step)
 (copy generated vagrant user private key into VM and set up SSH config - see below for one-off intervention)
 vagrant reload --provision
 ```
-Ansible cannot be installed on Windows, and so it will be installed into the VM by Vagrant and then run from within to provision the VM. However the initial Ansible run fails as the VM needs to be able to provision itself via an SSH connection but cannot connect.
+Ansible cannot be installed on Windows, and so it will be installed into the VM by Vagrant and then run from within to
+provision the VM. However, the initial Ansible run fails as the VM needs to be able to provision itself via an SSH
+connection but cannot connect at this stage.
 The one-off manual steps to rectify this are as follows:
 1. Copy the generated `private_key` from `.vagrant/machines/default/virtualbox` into the VM for vagrant user as `~/.ssh.private_key`
 2. SSH into the VM
@@ -36,7 +38,22 @@ The one-off manual steps to rectify this are as follows:
         User vagrant
     ```
 5. Change the access permissions on the `config` and `private_key` files to 0600: `chmod 0600 config private_key`
-6. Test that you have set this up by SSHing to the VM from within as the vagrant user `ssh 192.168.33.35` - you'll need to accept the question about connecting to an unknown host; don't forget to `exit` before continuing with provisioning the VM.
+6. Test that you have set this up by SSHing to the VM from within as the vagrant user `ssh 192.168.33.35` - you'll need
+to accept the question about connecting to an unknown host; don't forget to `exit` before continuing with provisioning
+the VM.
+
+For Windows hosts, two aliases are added into the `~/.bashrc` file
+- `vendormount` to mount bind '~/vendor' to `/bacpac/vendor`
+- `vendorunmount` to remove the above mount.
+These have been added to specifically work around shared folder issues for Windows hosts while working on **bacpac**.
+
+## Shared directories
+Host-VM shared directories have been set up for:
+- `/vagrant` (the standard share of the host directory in which the Vagrantfile resides)
+- `/ansible` (this repository's `ansible` directory required for Ansible provisioning when on Windows hosts)
+- `/bacpac` (this expects to find the `bacpac` codebase in a directory name `bacpac` at the same level as this repository)
+
+The `bacpac` share can be adjusted as required.
 
 ### Add Virtual Hosts
 Add a new entry to the `virtual_hosts` dictionary in the `ansible/group_vars/all` file. Set the `host_name` to the virtual host that you would like to use.
