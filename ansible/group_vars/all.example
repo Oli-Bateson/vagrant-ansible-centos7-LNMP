@@ -35,6 +35,10 @@ fastcgi_read_timeout: 60
 # PHP Version
 php_version: "5.6"
 
+# ZendPHP PHP 5.6 repository credentials - for use with Zend PHP installation for bacpac only - see 1Password
+zendphp_username:
+zendphp_password:
+
 # NginX Virtual Hosts
 virtual_hosts:
     - name: example

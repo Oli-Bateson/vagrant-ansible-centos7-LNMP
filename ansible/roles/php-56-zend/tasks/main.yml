@@ -1,0 +1,80 @@
+---
+- name: install Zend PHP 5.6
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    enablerepo: zend-server,zend-server-noarch
+  vars:
+    packages:
+    - php5.6-zend
+    - php5.6-common-zend
+    - php5.6-bcmath-zend
+    - php5.6-bz2-zend
+    - php5.6-curl-zend
+    - php5.6-gd-zend
+    - php5.6-intl-zend
+    - php5.6-mbstring-zend
+    - php5.6-mcrypt-zend
+    - php5.6-memcache-zend
+    - php5.6-memcached-zend
+    - php5.6-mysql-zend
+    - php5.6-mysqli-zend
+    - php5.6-pcntl-zend
+    - php5.6-pdo-mysql-zend
+    - php5.6-soap-zend
+    - php5.6-wddx-zend
+    - php5.6-xdebug-zend
+    - php5.6-xsl-zend
+    - php5.6-zip-zend
+    - php5.6-fpm-zend
+    - php5.6-fpm-nginx-conf-zend
+
+- name: set access log file
+  file:
+    state: directory
+    path: /var/log/php-fpm
+    mode: 0777
+
+- name: php.ini file
+  template:
+    src: php.ini
+    dest: /usr/local/zend/php/5.6/etc/php.ini
+
+- name: www.cnf file
+  template:
+    src: www.conf
+    dest: /usr/local/zend/php/5.6/etc/fpm.d/www.conf
+
+- name: create php session directory
+  file:
+    state: directory
+    path: /var/lib/php/session
+    mode: 0777
+
+- name: set access log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/access.log
+    mode: 0777
+  changed_when: false
+
+- name: set error log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/error.log
+    mode: 0777
+  changed_when: false
+
+- name: set slow log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/slow.log
+    mode: 0777
+  changed_when: false
+
+- name: start php-fpm
+  service:
+    name: php-fpm
+    state: started
+    enabled: true
+

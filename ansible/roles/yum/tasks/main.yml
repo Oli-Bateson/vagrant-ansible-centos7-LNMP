@@ -16,6 +16,7 @@
   vars:
     packages:
     - http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+  when: php_version != "Zend5.6"
 
 - name: setup third party repositories (mysql-community 5.7)
   yum:
@@ -37,6 +38,26 @@
 - name: Disable Mysql 5.7 repository when MySQL 5.5 requested
   command: "yum-config-manager --disable repository mysql57-community"
   when: mysql_version == "5.5"
+
+- name: Add ZendPHP 5.6 repository
+  yum_repository:
+    name: zend-server
+    description: Zend Enterprise PHP 5.6
+    baseurl: "https://{{zendphp_username}}:{{zendphp_password}}@repos.zend.com/zendphp/5.6/rpm_centos6/$basearch"
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://repos.zend.com/zend.key
+  when: php_version == "Zend5.6"
+
+- name: Add ZendPHP 5.6 noarch repository
+  yum_repository:
+    name: zend-server-noarch
+    description: Zend Enterprise PHP 5.6 noarch
+    baseurl: "https://{{zendphp_username}}:{{zendphp_password}}@repos.zend.com/zendphp/5.6/rpm_centos6/noarch"
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://repos.zend.com/zend.key
+  when: php_version == "Zend5.6"
 
 - name: update/install required packages 1
   yum:
