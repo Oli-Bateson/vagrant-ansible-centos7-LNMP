@@ -64,6 +64,10 @@ Add the following line `192.168.33.35 {host_name}` (where the `{host_name}` is t
 Edit `ansible/group_vars/all` with your favourite editor and change
 the `php_version` variable. 5.5, 5.6 7.1 and 7.2 are the only allowed version numbers at this time.
 
+### Change MySQL Versions
+Edit `ansible/group_vars/all` with your favourite editor and change
+the `mysql_version` variable. 5.5 and 5.7 are the only allowed version numbers at this time.
+
 ### Update Dependencies
 After changing any ansible settings just run `vagrant up --provision` to propagate the changes to the VM.
 
