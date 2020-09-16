@@ -38,7 +38,7 @@ The one-off manual steps to rectify this are as follows:
         User vagrant
     ```
 5. Change the access permissions on the `config` and `private_key` files to 0600: `chmod 0600 config private_key`
-6. Test that you have set this up by SSHing to the VM from within as the vagrant user `ssh 192.168.33.35` - you'll need
+6. Test that you have set this up correctly by SSHing to the VM from within as the vagrant user `ssh 192.168.33.35` - you'll need
 to accept the question about connecting to an unknown host; don't forget to `exit` before continuing with provisioning
 the VM.
 
