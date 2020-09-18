@@ -26,9 +26,9 @@ Vagrant.configure("2") do |config|
     default.vm.network :private_network, ip: "192.168.33.35"
     # Shared folder
     if OS.windows?
-      default.vm.synced_folder "www", "/vagrant"
-      default.vm.synced_folder "ansible", "/ansible"
-      default.vm.synced_folder "../bacpac", "/bacpac"
+      default.vm.synced_folder "www", "/vagrant", type: "virtualbox"
+      default.vm.synced_folder "ansible", "/ansible", type: "virtualbox"
+      default.vm.synced_folder "../bacpac", "/bacpac", type: "virtualbox"
     end
     if OS.linux?
       default.vm.synced_folder "www", "/vagrant", :nfs => true
