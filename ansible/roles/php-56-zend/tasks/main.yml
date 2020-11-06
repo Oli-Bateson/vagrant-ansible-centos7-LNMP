@@ -3,31 +3,32 @@
   yum:
     name: "{{ packages }}"
     state: latest
-    enablerepo: zend-server,zend-server-noarch
+    enablerepo: zendphp
   vars:
     packages:
-    - php5.6-zend
-    - php5.6-common-zend
-    - php5.6-bcmath-zend
-    - php5.6-bz2-zend
-    - php5.6-curl-zend
-    - php5.6-gd-zend
-    - php5.6-intl-zend
-    - php5.6-mbstring-zend
-    - php5.6-mcrypt-zend
-    - php5.6-memcache-zend
-    - php5.6-memcached-zend
-    - php5.6-mysql-zend
-    - php5.6-mysqli-zend
-    - php5.6-pcntl-zend
-    - php5.6-pdo-mysql-zend
-    - php5.6-soap-zend
-    - php5.6-wddx-zend
-    - php5.6-xdebug-zend
-    - php5.6-xsl-zend
-    - php5.6-zip-zend
-    - php5.6-fpm-zend
-    - php5.6-fpm-nginx-conf-zend
+    - php56zend-php-cli
+    - php56zend-syspaths
+    - php56zend-php-common
+    - php56zend-php-bcmath
+    - php56zend-php-bz2
+    - php56zend-php-curl
+    - php56zend-php-gd
+    - php56zend-php-intl
+    - php56zend-php-mbstring
+    - php56zend-php-mcrypt
+#    - php56zend-php-memcache #unavailable at present, not needed for bacpac?
+#    - php56zend-php-memcached #unavailable at present, broken dependency chain (installs php56zend-php-pecl-memcached and requires php56zend-php-json), not needed for bacpac?
+    - php56zend-php-mysql
+    - php56zend-php-mysqli
+    - php56zend-php-pcntl
+#    - php56zend-php-pdo-mysql #unavailable at present (mysqlnd is available and installed as part of common)
+    - php56zend-php-soap
+    - php56zend-php-wddx
+    - php56zend-php-xdebug
+    - php56zend-php-xsl
+    - php56zend-php-zip
+    - php56zend-php-fpm
+#    - php56zend-php-fpm-nginx-conf #unavailable at present
 
 - name: set access log file
   file:
@@ -38,12 +39,12 @@
 - name: php.ini file
   template:
     src: php.ini
-    dest: /usr/local/zend/php/5.6/etc/php.ini
+    dest: /opt/zend/php56zend/root/etc/php.ini
 
 - name: www.cnf file
   template:
     src: www.conf
-    dest: /usr/local/zend/php/5.6/etc/fpm.d/www.conf
+    dest: /opt/zend/php56zend/root/etc/php-fpm.d/www.conf
 
 - name: create php session directory
   file:
@@ -74,7 +75,7 @@
 
 - name: start php-fpm
   service:
-    name: php-fpm
+    name: php56zend-php-fpm
     state: started
     enabled: true
 
