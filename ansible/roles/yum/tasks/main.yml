@@ -49,6 +49,16 @@
     gpgkey: https://repos.zend.com/zend.key
   when: php_version == "Zend5.6"
 
+- name: Add ZendPHP 5.6 repository (noarch)
+  yum_repository:
+    name: zendphpnoarch
+    description: Zend Enterprise PHP 5.6 NoArch
+    baseurl: "https://{{zendphp_username}}:{{zendphp_password}}@repos.zend.com/zendphp/rpm_centos6/noarch"
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://repos.zend.com/zend.key
+  when: php_version == "Zend5.6"
+
 - name: update/install required packages 1
   yum:
     name: "{{ packages }}"

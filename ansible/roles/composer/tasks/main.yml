@@ -6,6 +6,16 @@
     use_regex: yes
     file_type: link
   register: php_binarys
+  when: php_version != "Zend5.6"
+
+- name: Find PHP when using Zend PHP
+  find:
+    paths: /usr/bin/
+    patterns: ^php$
+    use_regex: yes
+    file_type: link
+  register: php_binarys
+  when: php_version == "Zend5.6"
 
 - name: Install PHP Composer 1.10.8
   get_url:
