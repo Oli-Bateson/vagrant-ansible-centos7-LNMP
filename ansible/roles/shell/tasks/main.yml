@@ -39,10 +39,10 @@
 - name: enable Zend PHP 5.6 via supplied enabling script
   become: true
   become_user: vagrant
-  blockinfile:
+  lineinfile:
     path: ~/.bashrc
+    line: '{{ item }}'
     insertafter: 'EOF'
-    state: present
-    block: |
-      source /opt/zend/php56zend/enable
-    when: php_version == "Zend5.6"
+  with_items: "source /opt/zend/php56zend/enable"
+  when: php_version == "Zend5.6"
+  changed_when: false
