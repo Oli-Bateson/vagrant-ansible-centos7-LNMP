@@ -48,11 +48,25 @@ Vagrant.configure("2") do |config|
     end
 
     if OS.windows?
+    # use shell provisioner to bootstrap - fix yum.repos.d/centos-base file (disable mirror, enable baseurl, change baseurl to vault.centos.org in all cases)
+    # then install scl, use scl to install python 2.7, install pip
+    #
+    # Bootstrap shell script
+     config.vm.provision :shell, path: "prebuild-one.sh", privileged: false, name: "prebuild - one"
+     config.vm.provision :shell, path: "prebuild-rootsetup.sh", privileged: true, name: "prebuild - root setup"
+     config.vm.provision :shell, path: "prebuild-two.sh", privileged: true, name: "prebuild - two"
+    # then use ansible_local provisioner
       default.vm.provision "ansible_local" do |ansible|
         ansible.compatibility_mode = "2.0"
+        ansible.install_mode = "pip"
+        # pip already installed in custom provisioning script prebuild-two.sh so have to override the default install script (shown below)
+        # with a dummy version "true" so that the Ansible provisioner does not override our changes
+        #ansible.pip_install_cmd = "curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py; sudo python get-pip.py"
+        ansible.pip_install_cmd = "true"
         ansible.playbook = "/ansible/install.yml"
         ansible.inventory_path = "/ansible/hosts"
-        ansible.verbose = true
+        # Uncomment the next line for increased output from Ansible provisioning, change to "-vvv" for debug level output
+        #ansible.verbose = true
         ansible.provisioning_path = "/ansible"
         ansible.extra_vars = {
           windowshost: true
