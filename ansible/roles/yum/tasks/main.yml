@@ -1,23 +1,13 @@
 ---
-#- name: install the epel rpm from a remote repo
-#  yum:
-#    name: epel-release
-#    state: latest
+- name: install the epel rpm from a remote repo
+  yum:
+    name: epel-release
+    state: latest
 
-#- name: add epel public key
-#  rpm_key:
-#    state: present
-#    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
-
-- name: Disable epel-release
-  command: "yum-config-manager --disable repository epel-release"
-
-- name: Add EPEL from alt source
-  yum_repository:
-    name: epel-alt
-    description: EPEL alt source
-    baseurl: https://vault.centos.org/6.10/os/$basearch
-    enabled: 1
+- name: add epel public key
+  rpm_key:
+    state: present
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
 
 - name: setup third party repository (remi)
   yum:
@@ -96,7 +86,7 @@
     name: "{{ packages }}"
     state: present
     enablerepo: mysql55-community
-    disablerepo: epel-alt
+    disablerepo: epel
     disable_gpg_check: yes
   vars:
     packages:
