@@ -31,6 +31,11 @@
     src: php.ini
     dest: /opt/remi/php56/root/etc/php.ini
 
+- name: custom xdebug configuration .ini file
+  template:
+    src: xdebug-conf.ini
+    dest: /opt/remi/php56/root/etc/php.d/xdebug-conf.ini
+
 - name: www.cnf file
   template:
     src: www.conf
