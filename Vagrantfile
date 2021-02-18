@@ -24,6 +24,28 @@ Vagrant.configure("2") do |config|
     default.vm.network "forwarded_port", guest: 3306, host: 6612
 
     default.vm.network :private_network, ip: "192.168.33.35"
+
+    # Need to adjust specific yum.repos.d/*.repo files due to CentOS6 being EOL
+    default.vbguest.installer_hooks[:before_install] = [
+    "cd /etc/yum.repos.d; if [ ! -f \"CentOS-Base.repo.bak\" ]; then printf \"Backing up CentOS-Base.repo file\"; sudo cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak; fi",
+    "printf \"Amending CentOS-Base.repo\"",
+    "sudo sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo",
+    "sudo sed -i 's|^#baseurl=|baseurl=|g' /etc/yum.repos.d/CentOS-Base.repo",
+    "sudo sed -i 's|^baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Base.repo",
+    "printf \"Install scl\"",
+    "sudo yum install -y centos-release-scl",
+    "cd /etc/yum.repos.d; if [ ! -f \"CentOS-SCLo-scl.repo.bak\" ]; then printf \"Backing up CentOS-SCLo-scl.repo file\"; sudo cp /etc/yum.repos.d/CentOS-SCLo-scl.repo /etc/yum.repos.d/CentOS-SCLo-scl.repo.bak; fi",
+    "printf \"Amending CentOS-SCLo-scl.repo\"",
+    "sudo sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-SCLo-scl.repo",
+    "sudo sed -i 's|^# baseurl=|baseurl=|g' /etc/yum.repos.d/CentOS-SCLo-scl.repo",
+    "sudo sed -i 's|^baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-SCLo-scl.repo",
+    "cd /etc/yum.repos.d; if [ ! -f \"CentOS-SCLo-scl-rh.repo.bak\" ]; then printf \"Backing up CentOS-SCLo-scl-rh.repo file\"; sudo cp /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo.bak; fi",
+    "printf \"Amending CentOS-SCLo-scl-rh.repo\"",
+    "sudo sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo",
+    "sudo sed -i 's|^#baseurl=|baseurl=|g' /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo",
+    "sudo sed -i 's|^baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo"
+    ]
+
     # Shared folder
     if OS.windows?
       default.vm.synced_folder "www", "/vagrant", type: "virtualbox"
