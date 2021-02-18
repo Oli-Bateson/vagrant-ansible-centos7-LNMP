@@ -79,6 +79,9 @@ Vagrant.configure("2") do |config|
         ansible.playbook = "ansible/install.yml"
         ansible.inventory_path = "ansible/hosts"
         ansible.verbose = true
+        ansible.extra_vars = {
+          windowshost: false
+        }
       end
     end
   end
