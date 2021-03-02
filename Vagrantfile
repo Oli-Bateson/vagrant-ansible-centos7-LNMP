@@ -51,16 +51,19 @@ Vagrant.configure("2") do |config|
       default.vm.synced_folder "www", "/vagrant", type: "virtualbox"
       default.vm.synced_folder "ansible", "/ansible", type: "virtualbox"
       default.vm.synced_folder "../bacpac", "/bacpac", type: "virtualbox"
+      default.vm.synced_folder "../paywall", "/paywall", type: "virtualbox"
     end
     if OS.linux?
       default.vm.synced_folder "www", "/vagrant", :nfs => true
       default.vm.synced_folder "ansible", "/ansible", :nfs => true
       default.vm.synced_folder "../bacpac", "/bacpac", :nfs => true
+      default.vm.synced_folder "../paywall", "/paywall", :nfs => true
     end
     if OS.mac?
       default.vm.synced_folder "www", "/vagrant", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
       default.vm.synced_folder "ansible", "/ansible", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
       default.vm.synced_folder "../bacpac", "/bacpac", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
+      default.vm.synced_folder "../paywall", "/paywall", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
     end
 
 
@@ -100,7 +103,8 @@ Vagrant.configure("2") do |config|
         ansible.compatibility_mode = "2.0"
         ansible.playbook = "ansible/install.yml"
         ansible.inventory_path = "ansible/hosts"
-        ansible.verbose = true
+        # Uncomment the next line for increased output from Ansible provisioning, change to "-vvv" for debug level output
+        #ansible.verbose = true
         ansible.extra_vars = {
           windowshost: false
         }
