@@ -33,7 +33,7 @@ mysql_version: "5.7"
 node_version: v11
 
 # Timeout
-fastcgi_read_timeout: 60
+fastcgi_read_timeout: 300
 
 # PHP Version
 php_version: "5.6"
