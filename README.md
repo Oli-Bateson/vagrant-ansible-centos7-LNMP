@@ -9,6 +9,9 @@
 
 ### Run
 
+Edit the `all` file to suit once copied.
+Note that, for a VM suitable for bacpac and paywall, the `fastcgi_read_timeout` value in `all.example` has been updated to 300s as per task #142741, but only needs to be this value for bacpac. For paywall it must be reset to 60s after the VM has been built by manually editing the generated nginx configuration file for the paywall host in the VM (generated in `/etc/nginx/conf.d/`), setting the value back to `60`, then reloading the nginx configuration (`nginx -t` to test the change, if ok then run `sudo service nginx reload`) .
+
 For Macs:
 ```
 cp ansible/group_vars/all.example ansible/group_vars/all
@@ -93,17 +96,17 @@ After changing any ansible settings just run `vagrant up --provision` to propaga
 
 ### Default Config File Locations Inside The Virtual Machine
 **Nginx**
-- error log setting : `/var/log/php-fpm/error.log`
+- error log setting : `/var/log/php-fpm/error.log` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/var/log/php-fpm/error.log`)
 - nginx configuration : `/etc/nginx/nginx.conf`
 
 **PHP**
-- php.ini file is at : `/opt/remi/php56/root/etc/php.ini`
-- Xdebug executable : `/opt/remi/php56/root/usr/lib64/php/modules/xdebug.so`
-- xdebug.ini file at : `/opt/remi/php56/root/etc/php.d/15-xdebug.ini`
+- php.ini file is at : `/opt/remi/php56/root/etc/php.ini` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/etc/php.ini`)
+- Xdebug executable : `/opt/remi/php56/root/usr/lib64/php/modules/xdebug.so` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/usr/lib64/php/56zend/modules/xdebug.so`)
+- xdebug.ini file at : `/opt/remi/php56/root/etc/php.d/15-xdebug.ini` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/etc/php.d/xdebug.ini`)
 
 **CentOS**
 - Restart nginx : `sudo service nginx restart`
-- To restart PHP-FPM : `sudo service php56-php-fpm restart`
+- To restart PHP-FPM : `sudo service php56-php-fpm restart` (When using ZendPHP, this becomes `sudo service php56zend-php-fpm restart`)
 
 ### Running multiple machines
 - Duplicate the `"default"` block in `Vagrantfile`
