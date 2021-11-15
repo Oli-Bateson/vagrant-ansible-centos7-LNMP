@@ -1,15 +1,21 @@
 ---
-- name: Find PHP
+- name: Find PHP binary
   find:
     paths: /usr/bin/
-    patterns: ^php[0-9]+$
+    patterns: "{{ lookup('vars', 'phppattern') }}"
     use_regex: yes
     file_type: link
   register: php_binarys
 
-- name: Install PHP Composer
+- name: foo1
+  debug: var=phppattern
+
+- name: foo
+  debug: var=php_binarys
+
+- name: Install PHP Composer 1.10.8
   get_url:
-    url: https://getcomposer.org/composer.phar
+    url: https://getcomposer.org/download/1.10.8/composer.phar
     dest: /usr/local/bin/composer
     mode: 0755
 

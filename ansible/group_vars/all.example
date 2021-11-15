@@ -26,14 +26,21 @@ mysql_root_db_pass: 'SomeSuperLongPassword1234!'
 #  - setting: 'group_concat_max_len'
 #    value: 1024
 
+# MySQL version
+mysql_version: "5.7"
+
 # Node Version - Node v11 is the latest that supports Centos6
 node_version: v11
 
 # Timeout
-fastcgi_read_timeout: 60
+fastcgi_read_timeout: 300
 
 # PHP Version
 php_version: "5.6"
+
+# ZendPHP PHP 5.6 repository credentials - for use with Zend PHP installation for bacpac only - see 1Password
+zendphp_username:
+zendphp_password:
 
 # NginX Virtual Hosts
 virtual_hosts:

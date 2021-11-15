@@ -1,18 +1,63 @@
 # Centos 6 LNMP Stack
 - Centos 6.5
-- NginX
-- MySQL 5.7
-- PHP 5.6/7.2/7.3
-- Node
-- NPM
-- Memcache
+- NginX 1.10.3
+- MySQL 5.5/5.7
+- PHP 5.5/5.6/7.2/7.3
+- Node 11
+- NPM 6.7.0
+- Memcache 1.4.1
 
 ### Run
+
+Edit the `all` file to suit once copied.
+Note that, for a VM suitable for bacpac and paywall, the `fastcgi_read_timeout` value in `all.example` has been updated to 300s as per task #142741, but only needs to be this value for bacpac. For paywall it must be reset to 60s after the VM has been built by manually editing the generated nginx configuration file for the paywall host in the VM (generated in `/etc/nginx/conf.d/`), setting the value back to `60`, then reloading the nginx configuration (`nginx -t` to test the change, if ok then run `sudo service nginx reload`) .
+
+For Macs:
 ```
 cp ansible/group_vars/all.example ansible/group_vars/all
 vagrant plugin install vagrant-vbguest
 vagrant up
 ```
+
+For Windows:
+```
+cp ansible/group_vars/all.example ansible/group_vars/all
+vagrant plugin install vagrant-vbguest
+vagrant up (this will fail at the initial Ansible provision step)
+(copy generated vagrant user private key into VM and set up SSH config - see below for one-off intervention)
+vagrant reload --provision
+```
+Ansible cannot be installed on Windows, and so it will be installed into the VM by Vagrant and then run from within to
+provision the VM. However, the initial Ansible run fails as the VM needs to be able to provision itself via an SSH
+connection but cannot connect at this stage.
+The one-off manual steps to rectify this are as follows:
+1. Copy the generated `private_key` from `.vagrant/machines/default/virtualbox` into the VM for vagrant user as `~/.ssh/private_key`
+2. SSH into the VM
+3. Change directory to `~/.ssh`
+4. Create the SSH configuration file `~/.ssh/config` with the following content (using spaces rather than tabs):
+    ```
+    Host 192.168.33.35
+        IdentityFile ~/.ssh/private_key
+        User vagrant
+    ```
+5. Change the access permissions on the `config` and `private_key` files to 0600: `chmod 0600 config private_key`
+6. Required step: Test that you have set this up correctly by SSHing to the VM from within as the vagrant user `ssh 192.168.33.35` - you'll need
+to accept the question about connecting to an unknown host; don't forget to `exit` before continuing with provisioning
+the VM.
+
+For Windows hosts, two aliases are added into the `~/.bashrc` file
+- `vendormount` to mount bind '~/vendor' to `/bacpac/vendor`
+- `vendorunmount` to remove the above mount.
+These have been added to specifically work around shared folder issues for Windows hosts while working on **bacpac**.
+
+## Shared directories
+Host-VM shared directories have been set up for:
+- `/vagrant` (the standard share of the host directory in which the Vagrantfile resides)
+- `/ansible` (this repository's `ansible` directory required for Ansible provisioning when on Windows hosts)
+- `/bacpac` (this expects to find the `bacpac` codebase in a directory name `bacpac` at the same level as this repository)
+- `/paywall` (this expects to find the `paywall` codebase in a directory name `paywall` at the same level as this repository)
+
+The `bacpac` and `paywall` shares can be adjusted as required.
 
 ### Add Virtual Hosts
 Add a new entry to the `virtual_hosts` dictionary in the `ansible/group_vars/all` file. Set the `host_name` to the virtual host that you would like to use.
@@ -20,8 +65,14 @@ Add a new entry to the `virtual_hosts` dictionary in the `ansible/group_vars/all
 Add the following line `192.168.33.35 {host_name}` (where the `{host_name}` is the one from the `all` file) to your hosts file `/etc/hosts`
 
 ### Change PHP Versions
+
+Edit `ansible/group_vars/all` with your favourite editor and change the `php_version` variable. The only allowed version
+numbers at this time are for PHP 5.5, 5.6, 7.2, 7.4 and Zend PHP 5.6.40 (use `5.5`, `5.6`, `7.2`, `7.4` or `Zend5.6`).
+The Zend PHP selection is only for use with bacpac and paywall and requires the use of credentials stored in 1Password.
+
+### Change MySQL Versions
 Edit `ansible/group_vars/all` with your favourite editor and change
-the `php_version` variable. 5.6 and 7.2 are the only allowed version numbers at this time.
+the `mysql_version` variable. The only allowed version numbers at this time are 5.5 and 5.7.
 
 ### Update Dependencies
 After changing any ansible settings just run `vagrant up --provision` to propagate the changes to the VM.
@@ -39,23 +90,23 @@ After changing any ansible settings just run `vagrant up --provision` to propaga
 
   Install VirtualBox, instructions can be found here: [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
-- **Ansible**
+- **Ansible (Mac only)**
 
   Install Ansible, instructions can be found here: [Ansible](http://docs.ansible.com/ansible/intro_installation.html#installing-the-control-machine)
 
-### Config File Location Inside The Virtual Machine
+### Default Config File Locations Inside The Virtual Machine
 **Nginx**
-- error log setting : `/var/log/php-fpm/error.log`
+- error log setting : `/var/log/php-fpm/error.log` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/var/log/php-fpm/error.log`)
 - nginx configuration : `/etc/nginx/nginx.conf`
 
 **PHP**
-- php.ini file is at : `/opt/remi/php56/root/etc/php.ini`
-- Xdebug executable : `/opt/remi/php56/root/usr/lib64/php/modules/xdebug.so`
-- xdebug.ini file at : `/opt/remi/php56/root/etc/php.d/15-xdebug.ini`
+- php.ini file is at : `/opt/remi/php56/root/etc/php.ini` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/etc/php.ini`)
+- Xdebug executable : `/opt/remi/php56/root/usr/lib64/php/modules/xdebug.so` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/usr/lib64/php/56zend/modules/xdebug.so`)
+- xdebug.ini file at : `/opt/remi/php56/root/etc/php.d/15-xdebug.ini` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/etc/php.d/xdebug.ini`)
 
 **CentOS**
-- restart nginx : `sudo service nginx restart`
-- to restart PHP-FPM : `sudo service php56-php-fpm restart`
+- Restart nginx : `sudo service nginx restart`
+- To restart PHP-FPM : `sudo service php56-php-fpm restart` (When using ZendPHP, this becomes `sudo service php56zend-php-fpm restart`)
 
 ### Running multiple machines
 - Duplicate the `"default"` block in `Vagrantfile`

@@ -4,21 +4,62 @@
     name: epel-release
     state: latest
 
-- name: setup third party repositories (remi, mysql-community)
+- name: add epel public key
+  rpm_key:
+    state: present
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
+
+- name: setup third party repository (remi)
   yum:
     name: "{{ packages }}"
     state: present
   vars:
     packages:
     - http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-    - http://repo.mysql.com/mysql57-community-release-el6.rpm
-  
-- name: add epel public key
-  rpm_key:
-    state: present
-    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
+  when: php_version != "Zend5.6"
 
-- name: update/install required packages
+- name: setup third party repositories (mysql-community 5.7)
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - "http://repo.mysql.com/mysql57-community-release-el6.rpm"
+  when: mysql_version=="5.7"
+
+- name: Add Mysql 5.5 repository
+  yum_repository:
+    name: mysql55-community
+    description: MySQl 5.5 Community Server
+    baseurl: http://repo.mysql.com/yum/mysql-5.5-community/el/6/$basearch
+    enabled: 1
+  when: mysql_version == "5.5"
+
+- name: Disable Mysql 5.7 repository when MySQL 5.5 requested
+  command: "yum-config-manager --disable repository mysql57-community"
+  when: mysql_version == "5.5"
+
+- name: Add ZendPHP 5.6 repository
+  yum_repository:
+    name: zendphp
+    description: Zend Enterprise PHP 5.6
+    baseurl: "https://{{zendphp_username}}:{{zendphp_password}}@repos.zend.com/zendphp/rpm_centos6/$basearch"
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://repos.zend.com/zend.key
+  when: php_version == "Zend5.6"
+
+- name: Add ZendPHP 5.6 repository (noarch)
+  yum_repository:
+    name: zendphpnoarch
+    description: Zend Enterprise PHP 5.6 NoArch
+    baseurl: "https://{{zendphp_username}}:{{zendphp_password}}@repos.zend.com/zendphp/rpm_centos6/noarch"
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://repos.zend.com/zend.key
+  when: php_version == "Zend5.6"
+
+- name: update/install required packages 1
   yum:
     name: "{{ packages }}"
     state: latest
@@ -29,12 +70,42 @@
     - yum-plugin-versionlock
     - libselinux-python
     - git
-    - mysql-community-server
-    - mysql-community-client
-    - MySQL-python
-    - mysql-connector-python
-    - memcached
-    - nginx
+
+- name: update/install required packages MySQL 5.7
+  yum:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - mysql-community-server
+      - mysql-community-client
+  when: mysql_version == "5.7"
+
+- name: update/install required packages MySQL 5.5
+  yum:
+    name: "{{ packages }}"
+    state: present
+    enablerepo: mysql55-community
+    disablerepo: epel
+    disable_gpg_check: yes
+  vars:
+    packages:
+      - mysql-community-server-5.5.41-2.el6.x86_64
+      - mysql-community-client-5.5.41-2.el6.x86_64
+  when: mysql_version == "5.5"
+
+- name: update/install required packages 2
+  yum:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - MySQL-python
+      - mysql-connector-python
+      - memcached
+      - nginx
+      - ant
+
 
 - name: Lock packages to required versions
   shell: yum versionlock {{ item }}

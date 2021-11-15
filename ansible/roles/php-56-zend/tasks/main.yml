@@ -1,0 +1,99 @@
+---
+- name: install Zend PHP 5.6 prerequisites
+  yum:
+    name: "{{packages}}"
+    state: latest
+  vars:
+    packages:
+      - gcc
+      - gcc-c++
+      - make
+
+- name: enable Software Collections package
+  shell: "yum-config-manager --enable centos-release-scl-rh"
+
+- name: install Zend PHP 5.6
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    enablerepo: zendphp
+  vars:
+    packages:
+    - php56zend
+    - php56zend-php-cli
+    - php56zend-php-common
+    - php56zend-php-bcmath
+    - php56zend-php-bz2
+    - php56zend-php-curl
+    - php56zend-php-gd
+    - php56zend-php-intl
+    - php56zend-php-mbstring
+    - php56zend-php-mcrypt
+    - php56zend-php-memcached
+    - php56zend-php-mysql
+    - php56zend-php-mysqli
+    - php56zend-php-pcntl
+    - php56zend-php-soap
+    - php56zend-php-wddx
+    - php56zend-php-xdebug
+    - php56zend-php-xsl
+    - php56zend-php-zip
+    - php56zend-php-fpm
+    - php56zend-php-devel
+    - php56zend-php-pear
+    - php56zend-syspaths
+
+- name: set access log file
+  file:
+    state: directory
+    path: /var/log/php-fpm
+    mode: 0777
+
+- name: php.ini file
+  template:
+    src: php.ini
+    dest: /opt/zend/php56zend/root/etc/php.ini
+
+- name: custom xdebug configuration .ini file
+  template:
+    src: xdebug-conf.ini
+    dest: /opt/zend/php56zend/root/etc/php.d/xdebug-conf.ini
+
+- name: www.cnf file
+  template:
+    src: www.conf
+    dest: /opt/zend/php56zend/root/etc/php-fpm.d/www.conf
+
+- name: create php session directory
+  file:
+    state: directory
+    path: /var/lib/php/session
+    mode: 0777
+
+- name: set access log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/access.log
+    mode: 0777
+  changed_when: false
+
+- name: set error log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/error.log
+    mode: 0777
+  changed_when: false
+
+- name: set slow log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/slow.log
+    mode: 0777
+  changed_when: false
+
+- name: start php-fpm
+  service:
+    name: php56zend-php-fpm
+    state: started
+    enabled: true
+

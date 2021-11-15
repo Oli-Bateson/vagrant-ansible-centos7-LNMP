@@ -1,3 +1,3 @@
-# Disable SELinux; this is a dev env, and vagrant mounts over nfs, making relabelling difficult
+# Disable SELinux; this is a dev env, and vagrant mounts over nfs on Macs making relabelling difficult; on Windows hosts this also causes problems with shared folders
 - selinux:
     state: disabled

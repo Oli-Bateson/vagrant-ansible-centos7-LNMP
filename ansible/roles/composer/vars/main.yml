@@ -1,0 +1,2 @@
+---
+phppattern: "{{ ['^', ((php_version == 'Zend5.6')|ternary('php', 'php[0-9]+'))|string, '$']|join() }}"

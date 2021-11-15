@@ -23,3 +23,26 @@
     insertafter: 'EOF'
   with_items: "{{ bash | default([]) }}"
   changed_when: false
+
+- name: insert custom mount bind into .bashrc for Windows-backed guest VMs
+  become: true
+  become_user: vagrant
+  blockinfile:
+    path: ~/.bashrc
+    insertafter: 'EOF'
+    state: present
+    block: |
+      alias vendormount='sudo mount --bind ~/vendor /bacpac/vendor'
+      alias vendorunmount='sudo umount ~/vendor'
+  when: windowshost == true
+
+- name: enable Zend PHP 5.6 via supplied enabling script
+  become: true
+  become_user: vagrant
+  lineinfile:
+    path: ~/.bashrc
+    line: '{{ item }}'
+    insertafter: 'EOF'
+  with_items: "source /opt/zend/php56zend/enable"
+  when: php_version == "Zend5.6"
+  changed_when: false

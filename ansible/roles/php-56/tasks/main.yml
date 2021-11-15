@@ -18,6 +18,7 @@
     - php56-php-pecl-memcached
     - php56-php-mcrypt
     - php56-php-fpm
+    - php56-php-gd
 
 - name: set access log file
   file:
@@ -29,6 +30,11 @@
   template:
     src: php.ini
     dest: /opt/remi/php56/root/etc/php.ini
+
+- name: custom xdebug configuration .ini file
+  template:
+    src: xdebug-conf.ini
+    dest: /opt/remi/php56/root/etc/php.d/xdebug-conf.ini
 
 - name: www.cnf file
   template:
