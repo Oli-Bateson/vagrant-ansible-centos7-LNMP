@@ -19,37 +19,6 @@ vagrant plugin install vagrant-vbguest
 vagrant up
 ```
 
-For Windows:
-```
-cp ansible/group_vars/all.example ansible/group_vars/all
-vagrant plugin install vagrant-vbguest
-vagrant up (this will fail at the initial Ansible provision step)
-(copy generated vagrant user private key into VM and set up SSH config - see below for one-off intervention)
-vagrant reload --provision
-```
-Ansible cannot be installed on Windows, and so it will be installed into the VM by Vagrant and then run from within to
-provision the VM. However, the initial Ansible run fails as the VM needs to be able to provision itself via an SSH
-connection but cannot connect at this stage.
-The one-off manual steps to rectify this are as follows:
-1. Copy the generated `private_key` from `.vagrant/machines/default/virtualbox` into the VM for vagrant user as `~/.ssh/private_key`
-2. SSH into the VM
-3. Change directory to `~/.ssh`
-4. Create the SSH configuration file `~/.ssh/config` with the following content (using spaces rather than tabs):
-    ```
-    Host 192.168.33.35
-        IdentityFile ~/.ssh/private_key
-        User vagrant
-    ```
-5. Change the access permissions on the `config` and `private_key` files to 0600: `chmod 0600 config private_key`
-6. Required step: Test that you have set this up correctly by SSHing to the VM from within as the vagrant user `ssh 192.168.33.35` - you'll need
-to accept the question about connecting to an unknown host; don't forget to `exit` before continuing with provisioning
-the VM.
-
-For Windows hosts, two aliases are added into the `~/.bashrc` file
-- `vendormount` to mount bind '~/vendor' to `/bacpac/vendor`
-- `vendorunmount` to remove the above mount.
-These have been added to specifically work around shared folder issues for Windows hosts while working on **bacpac**.
-
 ## Shared directories
 Host-VM shared directories have been set up for:
 - `/vagrant` (the standard share of the host directory in which the Vagrantfile resides)
@@ -90,7 +59,7 @@ After changing any ansible settings just run `vagrant up --provision` to propaga
 
   Install VirtualBox, instructions can be found here: [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
-- **Ansible (Mac only)**
+- **Ansible**
 
   Install Ansible, instructions can be found here: [Ansible](http://docs.ansible.com/ansible/intro_installation.html#installing-the-control-machine)
 
