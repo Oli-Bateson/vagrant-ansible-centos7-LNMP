@@ -96,7 +96,7 @@ After changing any ansible settings just run `vagrant up --provision` to propaga
 
 ### Default Config File Locations Inside The Virtual Machine
 **Nginx**
-- error log setting : `/var/log/php-fpm/error.log` (When using ZendPHP, this becomes `/opt/zend/php56zend/root/var/log/php-fpm/error.log`)
+- error log setting : `/var/log/php-fpm/error.log` (This has been configured to remain the same when using ZendPHP)
 - nginx configuration : `/etc/nginx/nginx.conf`
 
 **PHP**
