@@ -8,13 +8,13 @@
 - Memcache 1.4.1
 
 ### Run
-
 Edit the `all` file to suit once copied.
 Note that, for a VM suitable for bacpac and paywall, the `fastcgi_read_timeout` value in `all.example` has been updated to 300s as per task #142741, but only needs to be this value for bacpac. For paywall it must be reset to 60s after the VM has been built by manually editing the generated nginx configuration file for the paywall host in the VM (generated in `/etc/nginx/conf.d/`), setting the value back to `60`, then reloading the nginx configuration (`nginx -t` to test the change, if ok then run `sudo service nginx reload`) .
 
 For Macs:
 ```
 cp ansible/group_vars/all.example ansible/group_vars/all
+vim ansible/group_var/all
 vagrant plugin install vagrant-vbguest
 vagrant up
 ```
@@ -22,7 +22,6 @@ vagrant up
 ## Shared directories
 Host-VM shared directories have been set up for:
 - `/vagrant` (the standard share of the host directory in which the Vagrantfile resides)
-- `/ansible` (this repository's `ansible` directory required for Ansible provisioning when on Windows hosts)
 - `/bacpac` (this expects to find the `bacpac` codebase in a directory name `bacpac` at the same level as this repository)
 - `/paywall` (this expects to find the `paywall` codebase in a directory name `paywall` at the same level as this repository)
 
@@ -34,7 +33,6 @@ Add a new entry to the `virtual_hosts` dictionary in the `ansible/group_vars/all
 Add the following line `192.168.33.35 {host_name}` (where the `{host_name}` is the one from the `all` file) to your hosts file `/etc/hosts`
 
 ### Change PHP Versions
-
 Edit `ansible/group_vars/all` with your favourite editor and change the `php_version` variable. The only allowed version
 numbers at this time are for PHP 5.5, 5.6, 7.2, 7.4 and Zend PHP 5.6.40 (use `5.5`, `5.6`, `7.2`, `7.4` or `Zend5.6`).
 The Zend PHP selection is only for use with bacpac and paywall and requires the use of credentials stored in 1Password.
