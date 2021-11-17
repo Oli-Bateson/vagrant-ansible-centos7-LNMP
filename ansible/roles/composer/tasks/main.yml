@@ -7,12 +7,6 @@
     file_type: link
   register: php_binarys
 
-- name: foo1
-  debug: var=phppattern
-
-- name: foo
-  debug: var=php_binarys
-
 - name: Install PHP Composer 1.10.8
   get_url:
     url: https://getcomposer.org/download/1.10.8/composer.phar
