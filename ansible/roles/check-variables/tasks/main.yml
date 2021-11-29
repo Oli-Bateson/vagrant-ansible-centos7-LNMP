@@ -15,3 +15,9 @@
   when:
     - mysql_version != "5.5"
     - mysql_version != "5.7"
+
+- name: Ensure credentials supplied if Zend PHP selected
+  fail:
+    msg: "Missing credentials for use with Zend PHP"
+  when:
+    - php_version == "Zend5.6" and (zendphp_username == "" or zendphp_password == "")
