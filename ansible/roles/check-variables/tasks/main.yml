@@ -1,5 +1,6 @@
 ---
-- fail:
+- name: Validate PHP version selected
+  fail:
     msg: "Invalid PHP Version"
   when:
     - php_version != "5.5"
@@ -8,8 +9,15 @@
     - php_version != "7.3"
     - php_version != "Zend5.6"
 
-- fail:
+- name: Validate MySQL version selected
+  fail:
     msg: "Invalid MySQL Version"
   when:
     - mysql_version != "5.5"
     - mysql_version != "5.7"
+
+- name: Ensure credentials supplied if Zend PHP selected
+  fail:
+    msg: "Missing credentials for use with Zend PHP"
+  when:
+    - php_version == "Zend5.6" and (zendphp_username == "" or zendphp_password == "")
