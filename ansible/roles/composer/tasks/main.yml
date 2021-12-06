@@ -7,9 +7,9 @@
     file_type: link
   register: php_binarys
 
-- name: Install PHP Composer 2.1.12
+- name: Install PHP Composer 2.1.14
   get_url:
-    url: https://getcomposer.org/download/2.1.12/composer.phar
+    url: https://getcomposer.org/download/2.1.14/composer.phar
     dest: /usr/local/bin/composer
     mode: 0755
 
