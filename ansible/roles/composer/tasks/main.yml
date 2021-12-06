@@ -7,12 +7,6 @@
     file_type: link
   register: php_binarys
 
-- name: foo1
-  debug: var=phppattern
-
-- name: foo
-  debug: var=php_binarys
-
 - name: Install PHP Composer 2.1.14
   get_url:
     url: https://getcomposer.org/download/2.1.14/composer.phar
