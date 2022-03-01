@@ -1,0 +1,75 @@
+---
+- name: install php 7.4
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    enablerepo: remi,remi-php74
+  vars:
+    packages:
+    - php74
+    - php74-php-mbstring
+    - php74-php-pdo
+    - php74-php-mysqlnd
+    - php74-php-intl
+    - php74-php-bcmath
+    - php74-php-soap
+    - php74-php-pecl-xdebug
+    - php74-php-xml
+    - php74-php-zip
+    - php74-php-pecl-memcache
+    - php74-php-pecl-memcached
+    - php74-php-fpm
+
+- name: set access log file
+  file:
+    state: directory
+    path: /var/log/php-fpm
+    mode: 0777
+
+- name: php.ini file
+  template:
+    src: php.ini
+    dest: /etc/opt/remi/php74/php.ini
+
+- name: www.cnf file
+  template:
+    src: www.conf
+    dest: /etc/opt/remi/php74/php-fpm.d/www.conf
+
+- name: create php session directory
+  file:
+    state: directory
+    path: /var/lib/php/session
+    mode: 0777
+
+- name: set access log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/access.log
+    mode: 0777
+  changed_when: false
+
+- name: set error log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/error.log
+    mode: 0777
+  changed_when: false
+
+- name: set slow log file
+  file:
+    state: touch
+    dest: /var/log/php-fpm/slow.log
+    mode: 0777
+  changed_when: false
+
+- name: start php-fpm
+  service:
+    name: php74-php-fpm
+    state: started
+    enabled: true
+
+- name: enable php74
+  template:
+    src: enablephp74.sh
+    dest: /etc/profile.d/enablephp74.sh

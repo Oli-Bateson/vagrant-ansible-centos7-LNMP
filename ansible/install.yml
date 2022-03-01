@@ -16,6 +16,7 @@
   - { role: php-72, when: php_version == "7.2" }
   - { role: php-73, when: php_version == "7.3" }
   - { role: php-56-zend, when: php_version == "Zend5.6" }
+  - { role: php-74, when: php_version == "7.4" }
   - nodejs
   - nginx
   - hosts-file

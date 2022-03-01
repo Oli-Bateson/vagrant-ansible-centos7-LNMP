@@ -1,2 +1,5 @@
 .vagrant
-ansible/group_vars/all
+.DS_Store
+.idea
+ansible/group_vars/all.yml
+ansible/roles/.DS_Store

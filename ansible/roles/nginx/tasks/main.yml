@@ -1,6 +1,6 @@
 ---
-- name: Add nginx to chkconfig
-  command: chkconfig --add nginx
+- name: Enable nginx at startup (equivalent of chkconfig)
+  command: systemctl enable nginx
   changed_when: false
 
 - name: Copy nginx default configuration
@@ -8,6 +8,6 @@
   with_items: "{{ virtual_hosts }}"
 
 - name: Auto start nginx
-  command: chkconfig --levels 235 nginx on
+  command: systemctl start nginx
   notify: restart nginx
   changed_when: false

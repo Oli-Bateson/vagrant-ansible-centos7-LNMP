@@ -7,7 +7,7 @@
 - name: add epel public key
   rpm_key:
     state: present
-    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
 
 - name: setup third party repository (remi)
   yum:
@@ -15,7 +15,7 @@
     state: present
   vars:
     packages:
-    - http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+    - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
   when: php_version != "Zend5.6"
 
 - name: setup third party repositories (mysql-community 5.7)
@@ -24,7 +24,7 @@
     state: present
   vars:
     packages:
-    - "http://repo.mysql.com/mysql57-community-release-el6.rpm"
+    - "http://repo.mysql.com/mysql57-community-release-el7.rpm"
   when: mysql_version=="5.7"
 
 - name: Add Mysql 5.5 repository
@@ -75,6 +75,9 @@
   yum:
     name: "{{ packages }}"
     state: latest
+    enablerepo: mysql57-community
+    disablerepo: epel
+    disable_gpg_check: yes
   vars:
     packages:
       - mysql-community-server

@@ -19,9 +19,13 @@ end
 
 Vagrant.configure("2") do |config|
   config.vm.define "default" do |default|
-    default.vm.box = "centos/6"
+    default.vm.box = "centos/7"
+
+    config.vbguest.installer_hooks[:before_install] = ["yum install -y epel-release", "sleep 1"]
+    config.vbguest.installer_options = { allow_kernel_upgrade: false , enablerepo: true }
 
     default.vm.network "forwarded_port", guest: 3306, host: 6612
+    default.vm.network "forwarded_port", id: "ssh", host: 2223, guest: 22
 
     default.vm.network :private_network, ip: "192.168.33.35"
 
@@ -29,27 +33,6 @@ Vagrant.configure("2") do |config|
       puts 'Building on Windows is no longer supported'
       abort
     end
-
-    # Need to adjust specific yum.repos.d/*.repo files due to CentOS6 being EOL
-    default.vbguest.installer_hooks[:before_install] = [
-    "cd /etc/yum.repos.d; if [ ! -f \"CentOS-Base.repo.bak\" ]; then printf \"Backing up CentOS-Base.repo file\"; sudo cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak; fi",
-    "printf \"Amending CentOS-Base.repo\"",
-    "sudo sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo",
-    "sudo sed -i 's|^#baseurl=|baseurl=|g' /etc/yum.repos.d/CentOS-Base.repo",
-    "sudo sed -i 's|^baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Base.repo",
-    "printf \"Install scl\"",
-    "sudo yum install -y centos-release-scl",
-    "cd /etc/yum.repos.d; if [ ! -f \"CentOS-SCLo-scl.repo.bak\" ]; then printf \"Backing up CentOS-SCLo-scl.repo file\"; sudo cp /etc/yum.repos.d/CentOS-SCLo-scl.repo /etc/yum.repos.d/CentOS-SCLo-scl.repo.bak; fi",
-    "printf \"Amending CentOS-SCLo-scl.repo\"",
-    "sudo sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-SCLo-scl.repo",
-    "sudo sed -i 's|^# baseurl=|baseurl=|g' /etc/yum.repos.d/CentOS-SCLo-scl.repo",
-    "sudo sed -i 's|^baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-SCLo-scl.repo",
-    "cd /etc/yum.repos.d; if [ ! -f \"CentOS-SCLo-scl-rh.repo.bak\" ]; then printf \"Backing up CentOS-SCLo-scl-rh.repo file\"; sudo cp /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo.bak; fi",
-    "printf \"Amending CentOS-SCLo-scl-rh.repo\"",
-    "sudo sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo",
-    "sudo sed -i 's|^#baseurl=|baseurl=|g' /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo",
-    "sudo sed -i 's|^baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo"
-    ]
 
     # Shared folder
     if OS.windows?
@@ -68,7 +51,6 @@ Vagrant.configure("2") do |config|
       default.vm.synced_folder "../paywall", "/paywall", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
     end
 
-
     default.vm.provider "virtualbox" do |v|
       v.memory = 2048
       v.customize [ "guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000 ]
@@ -83,4 +65,8 @@ Vagrant.configure("2") do |config|
     end
 
   end
+
+     if Vagrant.has_plugin?("vagrant-vbguest")
+          config.vbguest.auto_update = false
+     end
 end
