@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
     config.vbguest.installer_options = { allow_kernel_upgrade: false , enablerepo: true }
 
     default.vm.network "forwarded_port", guest: 3306, host: 6612
-    default.vm.network "forwarded_port", id: "ssh", host: 2223, guest: 22
+    default.vm.network "forwarded_port", id: "ssh", host: 2224, guest: 22
 
     default.vm.network :private_network, ip: "192.168.33.35"
 
@@ -35,20 +35,14 @@ Vagrant.configure("2") do |config|
     end
 
     # Shared folder
-    if OS.windows?
-      default.vm.synced_folder "www", "/vagrant", type: "virtualbox"
-      default.vm.synced_folder "../bacpac", "/bacpac", type: "virtualbox"
-      default.vm.synced_folder "../paywall", "/paywall", type: "virtualbox"
-    end
-    if OS.linux?
-      default.vm.synced_folder "www", "/vagrant", :nfs => true
-      default.vm.synced_folder "../bacpac", "/bacpac", :nfs => true
-      default.vm.synced_folder "../paywall", "/paywall", :nfs => true
-    end
     if OS.mac?
       default.vm.synced_folder "www", "/vagrant", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
       default.vm.synced_folder "../bacpac", "/bacpac", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
       default.vm.synced_folder "../paywall", "/paywall", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
+      default.vm.synced_folder "../MayBacpApi", "/MayBacpApi", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
+      default.vm.synced_folder "../MayFeedback", "/MayFeedback", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
+      default.vm.synced_folder "../MayiCal", "/MayiCal", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
+      default.vm.synced_folder "../MayRecurly", "/MayRecurly", :nfs => true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc', 'actimeo=2']
     end
 
     default.vm.provider "virtualbox" do |v|
