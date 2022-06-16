@@ -12,6 +12,20 @@
     url: https://getcomposer.org/download/2.1.14/composer.phar
     dest: /usr/local/bin/composer
     mode: 0755
+  when: php_version == "5.5" or php_version == "5.6" or php_version == "Zend5.6"
+
+- name: Install PHP Composer 2.2.12 LTS
+  get_url:
+    url: https://getcomposer.org/download/2.2.12/composer.phar
+    dest: /usr/local/bin/composer
+    mode: 0755
+  when: php_version == "7.2" or php_version == "7.3" or php_version == "7.4" or php_version == "8.1"
+
+#- name: Install PHP Composer 2.3.5
+#  get_url:
+#    url: https://getcomposer.org/download/2.3.5/composer.phar
+#    dest: /usr/local/bin/composer
+#    mode: 0755
 
 - name: Remove Global Phing
   become: true

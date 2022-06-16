@@ -1,27 +1,27 @@
 ---
-- name: install php 7.4
+- name: install php 8.1
   yum:
     name: "{{ packages }}"
     state: latest
-    enablerepo: remi,remi-php74
+    enablerepo: remi,remi-php81
   vars:
     packages:
-    - php74
-    - php74-php-mbstring
-    - php74-php-pdo
-    - php74-php-mysqlnd
-    - php74-php-intl
-    - php74-php-bcmath
-    - php74-php-soap
-    - php74-php-pecl-xdebug
-    - php74-php-xml
-    - php74-php-zip
-    - php74-php-pecl-memcache
-    - php74-php-pecl-memcached
-    - php74-php-fpm
-    - php74-php-pear
-    - php74-php-devel
-    - php74-syspaths
+    - php81
+    - php81-php-mbstring
+    - php81-php-pdo
+    - php81-php-mysqlnd
+    - php81-php-intl
+    - php81-php-bcmath
+    - php81-php-soap
+    - php81-php-pecl-xdebug
+    - php81-php-xml
+    - php81-php-zip
+    - php81-php-pecl-memcache
+    - php81-php-pecl-memcached
+    - php81-php-fpm
+    - php81-php-pear
+    - php81-php-devel
+    - php81-syspaths
 
 - name: set access log file
   file:
@@ -32,12 +32,12 @@
 - name: php.ini file
   template:
     src: php.ini
-    dest: /etc/opt/remi/php74/php.ini
+    dest: /etc/opt/remi/php81/php.ini
 
 - name: www.cnf file
   template:
     src: www.conf
-    dest: /etc/opt/remi/php74/php-fpm.d/www.conf
+    dest: /etc/opt/remi/php81/php-fpm.d/www.conf
 
 - name: create php session directory
   file:
@@ -68,11 +68,11 @@
 
 - name: start php-fpm
   service:
-    name: php74-php-fpm
+    name: php81-php-fpm
     state: started
     enabled: true
 
-- name: enable php74
+- name: enable php81
   template:
-    src: enablephp74.sh
-    dest: /etc/profile.d/enablephp74.sh
+    src: enablephp81.sh
+    dest: /etc/profile.d/enablephp81.sh

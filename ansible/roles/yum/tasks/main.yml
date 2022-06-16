@@ -70,6 +70,9 @@
     - yum-plugin-versionlock
     - libselinux-python
     - git
+    - vim
+    - nano
+    - tmux
 
 - name: update/install required packages MySQL 5.7
   yum:

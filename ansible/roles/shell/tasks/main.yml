@@ -34,3 +34,25 @@
   with_items: "source /opt/zend/php56zend/enable"
   when: php_version == "Zend5.6"
   changed_when: false
+
+- name: enable PHP 7.4 via supplied enabling script
+  become: true
+  become_user: vagrant
+  lineinfile:
+    path: ~/.bashrc
+    line: '{{ item }}'
+    insertafter: 'EOF'
+  with_items: "source /opt/remi/php74/enable"
+  when: php_version == "7.4"
+  changed_when: false
+
+- name: enable PHP 8.1 via supplied enabling script
+  become: true
+  become_user: vagrant
+  lineinfile:
+    path: ~/.bashrc
+    line: '{{ item }}'
+    insertafter: 'EOF'
+  with_items: "source /opt/remi/php81/enable"
+  when: php_version == "8.1"
+  changed_when: false
