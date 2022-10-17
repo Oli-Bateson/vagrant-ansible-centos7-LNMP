@@ -21,6 +21,7 @@
     - php81-php-fpm
     - php81-php-pear
     - php81-php-devel
+    - php81-php-gd
     - php81-syspaths
 
 - name: set access log file
