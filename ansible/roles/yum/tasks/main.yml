@@ -73,6 +73,7 @@
     - vim
     - nano
     - tmux
+    - docker
 
 - name: update/install required packages MySQL 5.7
   yum:
