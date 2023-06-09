@@ -3,7 +3,7 @@
   yum:
     name: "{{ packages }}"
     state: latest
-    enablerepo: remi,remi-php81
+    enablerepo: remi,remi-php81,remi-safe
   vars:
     packages:
     - php81
@@ -22,7 +22,8 @@
     - php81-php-pear
     - php81-php-devel
     - php81-php-gd
-    - php81-syspaths
+    - php-imagick
+    - php-cli
 
 - name: set access log file
   file:
@@ -77,3 +78,26 @@
   template:
     src: enablephp81.sh
     dest: /etc/profile.d/enablephp81.sh
+
+- name: pecl channel update
+  register: pecl_channel_cmd
+  shell: "/opt/remi/php81/root/usr/bin/pecl channel-update pecl.php.net"
+  become_method: sudo
+  changed_when: "'is up to date' not in pecl_channel_cmd.stdout"
+
+- name: pecl install
+  register: pecl_install_cmd
+  shell: "yes '' | /opt/remi/php81/root/usr/bin/pecl install imagick"
+  become_user: root
+  changed_when:
+    - "'already installed' not in pecl_install_cmd.stdout"
+    - pecl_install_cmd.rc == 0
+  failed_when:
+    - pecl_install_cmd.rc > 0
+    - "'already installed' not in pecl_install_cmd.stdout"
+
+- name: restart php-fpm
+  service:
+    name: php81-php-fpm
+    state: restarted
+    enabled: true

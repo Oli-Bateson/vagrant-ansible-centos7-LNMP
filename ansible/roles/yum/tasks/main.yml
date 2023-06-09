@@ -112,7 +112,8 @@
       - memcached
       - nginx
       - ant
-
+      - ImageMagick
+      - ImageMagick-devel
 
 - name: Lock packages to required versions
   shell: yum versionlock {{ item }}

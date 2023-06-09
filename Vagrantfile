@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
     default.vm.network "forwarded_port", guest: 3306, host: 6613
     default.vm.network "forwarded_port", id: "ssh", host: 2225, guest: 22
 
-    default.vm.network :private_network, ip: "192.168.33.36"
+    default.vm.network :private_network, ip: "192.168.33.35"
 
     if OS.windows?
       puts 'Building on Windows is no longer supported'
