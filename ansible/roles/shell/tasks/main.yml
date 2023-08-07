@@ -34,6 +34,22 @@
   with_items: "{{ bashphp81 | default([]) }}"
   changed_when: false
 
+- name: add MySQL RAM drive enable script
+  become: true
+  become_user: vagrant
+  template:
+    src: enable-mysql-ramdrive
+    dest: ~/enable-mysql-ramdrive
+    mode: '0744'
+
+- name: add MySQL RAM drive disable script
+  become: true
+  become_user: vagrant
+  template:
+    src: disable-mysql-ramdrive
+    dest: ~/disable-mysql-ramdrive
+    mode: '0744'
+
 - name: enable Zend PHP 5.6 via supplied enabling script
   become: true
   become_user: vagrant

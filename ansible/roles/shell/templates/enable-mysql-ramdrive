@@ -1,0 +1,34 @@
+#!/bin/bash
+set -eu
+if [ -d /var/ramfs ]; then
+  echo 'Ram Drive folder found'
+else
+  sudo mkdir -p /var/ramfs
+fi
+
+RAMFSMOUNT_VAR=$(cat /etc/fstab | grep '/var/ramfs' | cut -f1 -d" " | awk '{ print $0}')
+RAMFS_VAR=$(mount | grep 'on /var/ramfs' | cut -f1 -d" " | awk '{ print $0}')
+
+if [[ -z "${RAMFSMOUNT_VAR// }" ]];  then
+    # mount point not defined
+    echo 'Mount point not defined, adding...'
+    echo 'ramfs /var/ramfs ramfs size=50% 0 0' | sudo tee -a /etc/fstab > /dev/null
+else
+    echo 'Mount point found in /ect/fstab'
+fi
+
+if [[ -z "${RAMFS_VAR// }" ]]; then
+    echo 'Mounting RAM Drive at /var/ramfs'
+    sudo mount /var/ramfs
+else
+    echo 'RAM Drive already mounted'
+fi
+
+echo 'Stopping MySQL'
+sudo service mysqld stop
+echo 'Backing up MySQL data folder and linking Ram Drive folder'
+sudo cp -vrp /var/lib/mysql /var/ramfs/
+sudo mv /var/lib/mysql /var/lib/mysqlbk
+sudo ln -s /var/ramfs/mysql/ /var/lib/mysql
+echo 'Starting MySQL'
+sudo service mysqld start

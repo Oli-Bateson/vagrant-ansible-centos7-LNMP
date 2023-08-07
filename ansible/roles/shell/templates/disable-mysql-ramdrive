@@ -1,0 +1,13 @@
+#!/bin/bash
+set -eu
+
+echo 'Stopping MySQL'
+sudo service mysqld stop
+echo 'Remove Ram Drive content and restore MySQL data folder backup'
+sudo rm /var/lib/mysql
+sudo mv /var/lib/mysqlbk /var/lib/mysql
+echo 'Starting MySQL'
+sudo service mysqld start
+
+echo 'Unmounting Ram Drive'
+sudo umount /var/ramfs
