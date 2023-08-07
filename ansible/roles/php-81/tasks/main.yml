@@ -90,18 +90,6 @@
   become_method: sudo
   changed_when: "'is up to date' not in pecl_channel_cmd.stdout"
 
-# Not required as installing pecl imagick package via yum
-#- name: pecl install
-#  register: pecl_install_cmd
-#  shell: "yes '' | /opt/remi/php81/root/usr/bin/pecl install imagick"
-#  become_user: root
-#  changed_when:
-#    - "'already installed' not in pecl_install_cmd.stdout"
-#    - pecl_install_cmd.rc == 0
-#  failed_when:
-#    - pecl_install_cmd.rc > 0
-#    - "'already installed' not in pecl_install_cmd.stdout"
-
 - name: restart php-fpm
   service:
     name: php81-php-fpm
