@@ -114,6 +114,7 @@
       - ant
       - ImageMagick
       - ImageMagick-devel
+      - docker
 
 - name: Lock packages to required versions
   shell: yum versionlock {{ item }}
