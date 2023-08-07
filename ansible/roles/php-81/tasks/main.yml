@@ -83,15 +83,3 @@
   template:
     src: enablephp81.sh
     dest: /etc/profile.d/enablephp81.sh
-
-- name: pecl channel update
-  register: pecl_channel_cmd
-  shell: "/opt/remi/php81/root/usr/bin/pecl channel-update pecl.php.net"
-  become_method: sudo
-  changed_when: "'is up to date' not in pecl_channel_cmd.stdout"
-
-- name: restart php-fpm
-  service:
-    name: php81-php-fpm
-    state: restarted
-    enabled: true
