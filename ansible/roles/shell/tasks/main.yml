@@ -24,6 +24,16 @@
   with_items: "{{ bash | default([]) }}"
   changed_when: false
 
+- name: insert custom bash scripts for PHP 8.1
+  become: true
+  become_user: vagrant
+  lineinfile:
+    path: ~/.bashrc
+    line: '{{ item }}'
+    insertafter: 'EOF'
+  with_items: "{{ bashphp81 | default([]) }}"
+  changed_when: false
+
 - name: enable Zend PHP 5.6 via supplied enabling script
   become: true
   become_user: vagrant

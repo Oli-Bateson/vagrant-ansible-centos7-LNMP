@@ -6,6 +6,11 @@ username: vagrant
 bash:
   - alias hi="echo 'Hi'"
 
+# Custom bash if PHP8.1
+bashphp81:
+  - alias phpxdebugoff="sudo mv /etc/opt/remi/php81/php.d/xdebugconf.ini /etc/opt/remi/php81/php.d/xdebugconf.ini.bak;sudo mv /etc/opt/remi/php81/php.d/15-xdebug.ini /etc/opt/remi/php81/php.d/15-xdebug.ini.bak;sudo service php81-php-fpm restart;php -v"
+  - alias phpxdebugon="sudo mv /etc/opt/remi/php81/php.d/xdebugconf.ini.bak /etc/opt/remi/php81/php.d/xdebugconf.ini;sudo mv /etc/opt/remi/php81/php.d/15-xdebug.ini.bak /etc/opt/remi/php81/php.d/15-xdebug.ini;sudo service php81-php-fpm restart;php -v"
+
 # You shouldn't need to change this.
 mysql_port: 3306
 
